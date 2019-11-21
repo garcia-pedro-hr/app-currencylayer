@@ -6,9 +6,14 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-kapt'
 
+def apikeyPropertiesFile = rootProject.file('apikey.properties')
+def apikeyProperties = new Properties()
+apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.0"
+
     defaultConfig {
         applicationId "com.phgarcia.currencylayercc"
         minSdkVersion 24
@@ -16,13 +21,17 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField 'String', 'CURRENCYLAYER_KEY', '"' + apikeyProperties['CURRENCYLAYER_KEY'] + '"'
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     dataBinding {
         enabled true
     }
@@ -36,10 +45,11 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.core:core-ktx:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.work:work-runtime:2.2.0'
 
     // Android Components
     def lifecycle_version = '2.1.0'
-    def room_version = '2.2.1'
+    def room_version = '2.2.2'
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
@@ -49,8 +59,13 @@ dependencies {
 
     // Material Components
     def stable_material_version = '1.0.0'
-    def latest_material_version = '1.2.0-alpha01'
+    def latest_material_version = '1.2.0-alpha02'
     implementation "com.google.android.material:material:$latest_material_version"
+
+    // Retrofit
+    def retrofit_version = '2.5.0'
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
 
     // Testing
     testImplementation 'junit:junit:4.12'

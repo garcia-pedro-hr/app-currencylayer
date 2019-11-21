@@ -1,8 +1,8 @@
-package com.phgarcia.currencylayercc
+package com.phgarcia.currencylayercc.screens.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.phgarcia.currencylayercc.ui.main.MainFragment
+import com.phgarcia.currencylayercc.R
 
 class MainActivity : AppCompatActivity() {
 
