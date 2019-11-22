@@ -6,6 +6,7 @@ import android.os.AsyncTask
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.phgarcia.currencylayercc.apis.currencylayer.CurrencylayerAPI
 import com.phgarcia.currencylayercc.apis.currencylayer.Endpoint
 import com.phgarcia.currencylayercc.apis.currencylayer.ListCurrenciesResponse
@@ -21,8 +22,17 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private val currenciesDatabase: CurrenciesDatabase = CurrenciesDatabase.getInstance(application)
 
+    private val valueInputLiveData = MutableLiveData<Double>()
+    private val selectedCurrencyLiveData = MutableLiveData<CurrencyEntity>()
+
     val currenciesLiveData: LiveData<List<CurrencyEntity>> =
         currenciesDatabase.dao.getAll()
+
+    fun getValueInputObservable(): LiveData<Double> = valueInputLiveData
+    fun getSelectedCurrencyObservable(): LiveData<CurrencyEntity> = selectedCurrencyLiveData
+
+    fun setValueInput(value: Double) { valueInputLiveData.value = value }
+    fun setSelectedCurrency(currency: CurrencyEntity?) { selectedCurrencyLiveData.value = currency }
 
     fun requestCurrencies() {
         val currencylayerClient = CurrencylayerAPI.getInstance()
@@ -47,4 +57,5 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }
         })
     }
+
 }

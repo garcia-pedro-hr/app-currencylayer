@@ -12,4 +12,8 @@ data class CurrencyEntity (
 
     @ColumnInfo(name = "currency_name")
     val name: String = ""
-)
+) {
+
+    override fun toString(): String =  "$acronym - $name"
+
+}

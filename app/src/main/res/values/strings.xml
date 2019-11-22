@@ -2,5 +2,6 @@
     <string name="app_name">Currencylayer Currency Conversion</string>
 
     <!-- Prefixed strings -->
+    <string name="hint_input_currency">Currency</string>
     <string name="hint_input_value">Value</string>
 </resources>
