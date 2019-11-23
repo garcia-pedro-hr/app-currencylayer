@@ -1,4 +1,4 @@
-package com.phgarcia.currencylayercc.database.room.currencies
+package com.phgarcia.currencylayercc.database.room.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

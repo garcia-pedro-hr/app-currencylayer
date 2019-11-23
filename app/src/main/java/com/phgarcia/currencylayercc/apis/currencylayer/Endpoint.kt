@@ -1,6 +1,8 @@
 package com.phgarcia.currencylayercc.apis.currencylayer
 
 import com.phgarcia.currencylayercc.BuildConfig
+import com.phgarcia.currencylayercc.apis.currencylayer.responses.ListCurrenciesResponse
+import com.phgarcia.currencylayercc.apis.currencylayer.responses.LiveExchangeRatesResponse
 import retrofit2.Call
 import retrofit2.http.GET
 

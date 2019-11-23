@@ -1,4 +1,4 @@
-package com.phgarcia.currencylayercc.apis.currencylayer
+package com.phgarcia.currencylayercc.apis.currencylayer.responses
 
 import com.google.gson.annotations.SerializedName
 

@@ -1,28 +1,21 @@
 package com.phgarcia.currencylayercc.screens.main
 
-import android.content.Context
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.phgarcia.currencylayercc.R
-import com.phgarcia.currencylayercc.database.room.currencies.CurrencyEntity
+import com.phgarcia.currencylayercc.database.room.entities.CurrencyEntity
 import com.phgarcia.currencylayercc.databinding.MainFragmentBinding
 import com.phgarcia.currencylayercc.screens.main.adapters.CurrenciesAdapter
 import com.phgarcia.currencylayercc.utils.round
-import java.lang.Math.round
-import kotlin.math.roundToLong
 
 class MainFragment : Fragment() {
 
@@ -35,7 +28,8 @@ class MainFragment : Fragment() {
     private lateinit var viewModel: MainViewModel
     private lateinit var binding: MainFragmentBinding
 
-    private lateinit var currenciesAdapter: CurrenciesAdapter
+    private lateinit var sourceCurrenciesAdapter: CurrenciesAdapter
+    private lateinit var targetCurrenciesAdapter: CurrenciesAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,30 +47,60 @@ class MainFragment : Fragment() {
 
         initValueInputField()
         initCurrencyDropdown()
+        initExchangeDropdown()
         initObservables()
     }
 
     private fun initValueInputField() {
         binding.valueInput.addTextChangedListener { text ->
-            viewModel.setValueInput(text.toString().toDouble().round(2))
+            if (!text.isNullOrEmpty()) {
+                viewModel.setValueInput(text.toString().toDouble().round(2))
+            }
         }
     }
 
     private fun initCurrencyDropdown() {
-        currenciesAdapter = CurrenciesAdapter(context!!, R.layout.currency_dropdown_menu_item)
-        binding.currencyDropdown.setAdapter(currenciesAdapter)
+        sourceCurrenciesAdapter = CurrenciesAdapter(context!!, R.layout.currency_dropdown_menu_item)
+        binding.currencyDropdown.setAdapter(sourceCurrenciesAdapter)
         binding.currencyDropdown.onItemClickListener =
             AdapterView.OnItemClickListener { _, _, p2, _ ->
-                viewModel.setSelectedCurrency(currenciesAdapter.getItem(p2))
+                viewModel.setSelectedCurrency(sourceCurrenciesAdapter.getItem(p2))
+            }
+    }
+
+    private fun initExchangeDropdown() {
+        targetCurrenciesAdapter = CurrenciesAdapter(context!!, R.layout.currency_dropdown_menu_item)
+        binding.exchangeDropdown.setAdapter(targetCurrenciesAdapter)
+        binding.exchangeDropdown.onItemClickListener =
+            AdapterView.OnItemClickListener { _, _, p2, _ ->
+                viewModel.setSelectedTarget(targetCurrenciesAdapter.getItem(p2))
             }
     }
 
     private fun initObservables() {
         viewModel.currenciesLiveData.observe(this,
             Observer<List<CurrencyEntity>> { currencies ->
-                if (currencies.isNullOrEmpty()) viewModel.requestCurrencies()
-                else currenciesAdapter.setData(currencies)
+                if (currencies.isNullOrEmpty()) {
+                    Log.w(logTag, "No currencies on DB. Requesting API.")
+                    viewModel.requestCurrencies()
+                } else sourceCurrenciesAdapter.setData(currencies)
             })
+
+        viewModel.getTargetCurrenciesObservable().observe(this,
+            Observer<List<CurrencyEntity>> { currencies ->
+                println(currencies.joinToString(" "))
+                if (currencies.isNullOrEmpty()) {
+                    Log.w(logTag, "No exchange rates on DB. Requesting API.")
+                    viewModel.requestExchangeRates()
+                } else targetCurrenciesAdapter.setData(currencies)
+            })
+
+        viewModel.getSelectedCurrencyObservable().observe(this,
+            Observer { currency -> viewModel.updateTargetCurrenciesList(currency) })
+
+        viewModel.getValueInputObservable().observe(this,
+            Observer { input -> viewModel.updateConversionResult(input) })
+
     }
 
 }

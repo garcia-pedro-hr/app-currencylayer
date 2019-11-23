@@ -1,4 +1,4 @@
-package com.phgarcia.currencylayercc.apis.currencylayer
+package com.phgarcia.currencylayercc.apis.currencylayer.responses
 
 import com.google.gson.annotations.SerializedName
 
@@ -13,7 +13,7 @@ data class LiveExchangeRatesResponse (
     val privacy: String,
 
     @SerializedName("timestamp")
-    val timestamp: String,
+    val timestamp: Int,
 
     @SerializedName("source")
     val source: String,

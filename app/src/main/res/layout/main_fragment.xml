@@ -12,6 +12,30 @@
 
     </data>
 
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:background="@android:color/white"-->
+<!--        android:gravity="center"-->
+<!--        android:orientation="vertical"-->
+<!--        android:visibility="@{mainViewModel.downloadScreenStateObservable}">-->
+
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginBottom="16dp"-->
+<!--            android:text="@string/downloading_warning"-->
+<!--            android:textSize="24sp"/>-->
+
+<!--        <ProgressBar-->
+<!--            android:layout_width="50dp"-->
+<!--            android:layout_height="50dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:indeterminate="true"-->
+<!--            style="?android:attr/progressBarStyle" />-->
+
+<!--    </LinearLayout>-->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,8 +44,25 @@
         tools:context=".screens.main.MainFragment">
 
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:id="@+id/currency_dropdown_wrapper"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/hint_input_currency"
+            android:labelFor="@id/currency_dropdown">
+
+            <AutoCompleteTextView
+                android:id="@+id/currency_dropdown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:editable="false"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:hint="@string/hint_input_value"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
@@ -36,34 +77,28 @@
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:id="@+id/currency_dropdown_wrapper"
+            android:id="@+id/exchange_dropdown_wrapper"
+            android:layout_marginTop="48dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:hint="@string/hint_input_currency"
-            android:labelFor="@id/currency_dropdown">
+            android:labelFor="@id/exchange_dropdown">
 
             <AutoCompleteTextView
-                android:id="@+id/currency_dropdown"
+                android:id="@+id/exchange_dropdown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:editable="false"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content" >-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/selected_currency"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:textSize="14sp"-->
-<!--                android:textStyle="bold"-->
-<!--                android:text="@{mainViewModel.selectedCurrencyObservable.acronym}"/>-->
-
-<!--        </LinearLayout>-->
+        <TextView
+            android:id="@+id/converted_value_output"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="24sp"
+            android:text="@{mainViewModel.conversionResultObservable.toString()}"/>
 
     </LinearLayout>
 

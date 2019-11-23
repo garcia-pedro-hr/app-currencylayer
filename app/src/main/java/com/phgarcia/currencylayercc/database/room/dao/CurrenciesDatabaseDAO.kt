@@ -1,10 +1,11 @@
-package com.phgarcia.currencylayercc.database.room.currencies
+package com.phgarcia.currencylayercc.database.room.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.phgarcia.currencylayercc.database.room.entities.CurrencyEntity
 
 @Dao
 interface CurrenciesDatabaseDAO {
