@@ -15,6 +15,7 @@ import com.phgarcia.currencylayercc.R
 import com.phgarcia.currencylayercc.database.room.entities.CurrencyEntity
 import com.phgarcia.currencylayercc.databinding.MainFragmentBinding
 import com.phgarcia.currencylayercc.screens.main.adapters.CurrenciesAdapter
+import com.phgarcia.currencylayercc.utils.hideKeyboard
 import com.phgarcia.currencylayercc.utils.round
 
 class MainFragment : Fragment() {
@@ -54,7 +55,7 @@ class MainFragment : Fragment() {
     private fun initValueInputField() {
         binding.valueInput.addTextChangedListener { text ->
             if (!text.isNullOrEmpty()) {
-                viewModel.setValueInput(text.toString().toDouble().round(2))
+                viewModel.setValueInput(text.toString().toDouble().round(4))
             }
         }
     }
@@ -64,7 +65,11 @@ class MainFragment : Fragment() {
         binding.currencyDropdown.setAdapter(sourceCurrenciesAdapter)
         binding.currencyDropdown.onItemClickListener =
             AdapterView.OnItemClickListener { _, _, p2, _ ->
-                viewModel.setSelectedCurrency(sourceCurrenciesAdapter.getItem(p2))
+                viewModel.setSourceCurrency(sourceCurrenciesAdapter.getItem(p2))
+            }
+        binding.currencyDropdown.onFocusChangeListener =
+            View.OnFocusChangeListener { view, isFocused ->
+                if (view == binding.currencyDropdown && isFocused) hideKeyboard()
             }
     }
 
@@ -73,34 +78,40 @@ class MainFragment : Fragment() {
         binding.exchangeDropdown.setAdapter(targetCurrenciesAdapter)
         binding.exchangeDropdown.onItemClickListener =
             AdapterView.OnItemClickListener { _, _, p2, _ ->
-                viewModel.setSelectedTarget(targetCurrenciesAdapter.getItem(p2))
+                viewModel.setTargetCurrency(targetCurrenciesAdapter.getItem(p2))
+            }
+        binding.exchangeDropdown.onFocusChangeListener =
+            View.OnFocusChangeListener { view, isFocused ->
+                if (view == binding.exchangeDropdown && isFocused) hideKeyboard()
             }
     }
 
     private fun initObservables() {
-        viewModel.currenciesLiveData.observe(this,
+        viewModel.sourceCurrenciesLiveData.observe(this,
             Observer<List<CurrencyEntity>> { currencies ->
                 if (currencies.isNullOrEmpty()) {
                     Log.w(logTag, "No currencies on DB. Requesting API.")
                     viewModel.requestCurrencies()
+                    viewModel.requestExchangeRates()
                 } else sourceCurrenciesAdapter.setData(currencies)
             })
 
         viewModel.getTargetCurrenciesObservable().observe(this,
             Observer<List<CurrencyEntity>> { currencies ->
-                println(currencies.joinToString(" "))
-                if (currencies.isNullOrEmpty()) {
-                    Log.w(logTag, "No exchange rates on DB. Requesting API.")
-                    viewModel.requestExchangeRates()
-                } else targetCurrenciesAdapter.setData(currencies)
+                targetCurrenciesAdapter.setData(currencies)
             })
 
-        viewModel.getSelectedCurrencyObservable().observe(this,
-            Observer { currency -> viewModel.updateTargetCurrenciesList(currency) })
+        viewModel.getSourceCurrencyObservable().observe(this,
+            Observer { currency ->
+                viewModel.updateTargetCurrenciesList(currency)
+                viewModel.updateConversionResult()
+            })
+
+        viewModel.getTargetCurrencyObservable().observe(this,
+            Observer { viewModel.updateConversionResult() })
 
         viewModel.getValueInputObservable().observe(this,
-            Observer { input -> viewModel.updateConversionResult(input) })
-
+            Observer { viewModel.updateConversionResult() })
     }
 
 }

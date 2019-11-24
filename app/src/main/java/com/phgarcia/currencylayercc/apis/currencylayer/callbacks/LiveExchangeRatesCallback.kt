@@ -4,10 +4,7 @@ import android.util.Log
 import com.phgarcia.currencylayercc.apis.currencylayer.responses.LiveExchangeRatesResponse
 import com.phgarcia.currencylayercc.database.room.CurrencylayerDatabase
 import com.phgarcia.currencylayercc.database.room.entities.ExchangeRateEntity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -52,7 +49,7 @@ class LiveExchangeRatesCallback(
             for (i in 0 until currencies.size) {
                 val source = currencies.elementAt(i)
                 GlobalScope.launch {
-                    for (j in i until currencies.size) {
+                    for (j in i + 1 until currencies.size) {
                         val target = currencies.elementAt(j)
                         if (usdRates[source] != null && usdRates[target] != null) {
                             val exchangeRate = usdRates[target]?.times(1 / (usdRates[source]?: -1.0))
