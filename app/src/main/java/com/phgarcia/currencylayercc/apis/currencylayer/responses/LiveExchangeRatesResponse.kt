@@ -1,23 +1,12 @@
 package com.phgarcia.currencylayercc.apis.currencylayer.responses
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
 data class LiveExchangeRatesResponse (
-    @SerializedName("success")
-    val success: Boolean,
-
-    @SerializedName("terms")
-    val terms: String,
-
-    @SerializedName("privacy")
-    val privacy: String,
-
-    @SerializedName("timestamp")
-    val timestamp: Int,
-
-    @SerializedName("source")
-    val source: String,
-
-    @SerializedName("quotes")
-    val quotes: Map<String, Double>
+    @Json(name = "success") val success: Boolean,
+    @Json(name = "terms") val terms: String,
+    @Json(name = "privacy") val privacy: String,
+    @Json(name = "timestamp") val timestamp: Int,
+    @Json(name = "source") val source: String,
+    @Json(name = "quotes") val quotes: Map<String, Double>
 )

@@ -45,7 +45,6 @@ class MainFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
         initValueInputField()
         initCurrencyDropdown()
         initExchangeDropdown()
@@ -56,7 +55,7 @@ class MainFragment : Fragment() {
         binding.valueInput.addTextChangedListener { text ->
             if (!text.isNullOrEmpty()) {
                 viewModel.setValueInput(text.toString().toDouble().round(4))
-            }
+            } else viewModel.setValueInput(null)
         }
     }
 
@@ -91,8 +90,7 @@ class MainFragment : Fragment() {
             Observer<List<CurrencyEntity>> { currencies ->
                 if (currencies.isNullOrEmpty()) {
                     Log.w(logTag, "No currencies on DB. Requesting API.")
-                    viewModel.requestCurrencies()
-                    viewModel.requestExchangeRates()
+                    viewModel.updateCurrenciesFromApi()
                 } else sourceCurrenciesAdapter.setData(currencies)
             })
 
@@ -104,14 +102,7 @@ class MainFragment : Fragment() {
         viewModel.getSourceCurrencyObservable().observe(this,
             Observer { currency ->
                 viewModel.updateTargetCurrenciesList(currency)
-                viewModel.updateConversionResult()
             })
-
-        viewModel.getTargetCurrencyObservable().observe(this,
-            Observer { viewModel.updateConversionResult() })
-
-        viewModel.getValueInputObservable().observe(this,
-            Observer { viewModel.updateConversionResult() })
     }
 
 }

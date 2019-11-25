@@ -1,17 +1,10 @@
 package com.phgarcia.currencylayercc.apis.currencylayer.responses
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
 
 data class ListCurrenciesResponse (
-    @SerializedName("success")
-    val success: Boolean,
-
-    @SerializedName("terms")
-    val terms: String,
-
-    @SerializedName("privacy")
-    val privacy: String,
-
-    @SerializedName("currencies")
-    val currencies: Map<String, String>
+    @Json(name = "success") val success: Boolean,
+    @Json(name= "terms") val terms: String,
+    @Json(name = "privacy") val privacy: String,
+    @Json(name = "currencies") val currencies: Map<String, String>
 )
