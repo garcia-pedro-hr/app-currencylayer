@@ -41,16 +41,24 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun getSourceCurrencyObservable(): LiveData<CurrencyEntity> = sourceCurrencyLiveData
+    fun getTargetCurrencyObservable(): LiveData<CurrencyEntity> = targetCurrencyLiveData
     fun getConversionResultObservable(): LiveData<Double> = conversionResultLiveData
 
     fun setValueInput(value: Double?) = valueInputLiveData.postValue(value)
     fun setSourceCurrency(currency: CurrencyEntity?) = sourceCurrencyLiveData.postValue(currency)
     fun setTargetCurrency(currency: CurrencyEntity?) = targetCurrencyLiveData.postValue(currency)
 
-    fun updateTargetCurrenciesList(source: CurrencyEntity?) = viewModelScope.launch {
-        source?.let {
+    fun updateTargetCurrenciesList() = viewModelScope.launch {
+        sourceCurrencyLiveData.value?.let {
             currencylayerRepository.refreshTargetCurrenciesForSource(it)
         }
+    }
+
+    fun swapCurrencies() {
+        val oldSource = sourceCurrencyLiveData.value
+        sourceCurrencyLiveData.postValue(targetCurrencyLiveData.value)
+        updateTargetCurrenciesList()
+        setTargetCurrency(oldSource)
     }
 
     private fun refreshDataFromRepository() = viewModelScope.launch {

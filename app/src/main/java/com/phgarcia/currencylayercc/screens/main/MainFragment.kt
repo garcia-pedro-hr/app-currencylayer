@@ -64,7 +64,11 @@ class MainFragment : Fragment() {
         binding.currencyDropdown.setAdapter(sourceCurrenciesAdapter)
         binding.currencyDropdown.onItemClickListener =
             AdapterView.OnItemClickListener { _, _, p2, _ ->
-                viewModel.setSourceCurrency(sourceCurrenciesAdapter.getItem(p2))
+                sourceCurrenciesAdapter.getItem(p2)?.let {
+                    if (it == viewModel.getTargetCurrencyObservable().value) {
+                        viewModel.swapCurrencies()
+                    } else viewModel.setSourceCurrency(it)
+                }
             }
         binding.currencyDropdown.onFocusChangeListener =
             View.OnFocusChangeListener { view, isFocused ->
@@ -99,7 +103,12 @@ class MainFragment : Fragment() {
             })
 
         viewModel.getSourceCurrencyObservable().observe(this,
-            Observer { currency -> viewModel.updateTargetCurrenciesList(currency) })
+            Observer { viewModel.updateTargetCurrenciesList() })
+
+        viewModel.getTargetCurrencyObservable().observe(this,
+            Observer { currency ->
+                binding.exchangeDropdown.setText(currency.toString(), false)
+            })
     }
 
 }
