@@ -13,6 +13,9 @@ interface ExchangeRatesDatabaseDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(currencyEntity: ExchangeRateEntity)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(currencyEntities: List<ExchangeRateEntity>)
+
     @Query("""
         SELECT * FROM currencies_table INNER JOIN exchange_rates_table 
         ON currency_acronym = target_currency_id

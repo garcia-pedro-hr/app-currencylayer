@@ -88,21 +88,18 @@ class MainFragment : Fragment() {
     private fun initObservables() {
         viewModel.sourceCurrenciesLiveData.observe(this,
             Observer<List<CurrencyEntity>> { currencies ->
-                if (currencies.isNullOrEmpty()) {
-                    Log.w(logTag, "No currencies on DB. Requesting API.")
-                    viewModel.updateCurrenciesFromApi()
-                } else sourceCurrenciesAdapter.setData(currencies)
+                if (!currencies.isNullOrEmpty()) {
+                    sourceCurrenciesAdapter.setData(currencies)
+                }
             })
 
-        viewModel.getTargetCurrenciesObservable().observe(this,
+        viewModel.targetCurrenciesLiveData.observe(this,
             Observer<List<CurrencyEntity>> { currencies ->
                 targetCurrenciesAdapter.setData(currencies)
             })
 
         viewModel.getSourceCurrencyObservable().observe(this,
-            Observer { currency ->
-                viewModel.updateTargetCurrenciesList(currency)
-            })
+            Observer { currency -> viewModel.updateTargetCurrenciesList(currency) })
     }
 
 }

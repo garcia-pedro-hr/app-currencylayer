@@ -13,6 +13,9 @@ interface CurrenciesDatabaseDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(currencyEntity: CurrencyEntity)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(currencyEntities: List<CurrencyEntity>)
+
     @Query("SELECT * FROM currencies_table ORDER BY currency_acronym")
     fun getAll(): LiveData<List<CurrencyEntity>>
 
